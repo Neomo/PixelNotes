@@ -1,0 +1,7 @@
+{
+  "name": "像素桌面便签 (Pixel Notes Desktop)",
+  "description": "纯前端像素拟物风格桌面便签系统，支持多视图切换、桌面文件夹归档、便签星标置顶与本地数据持久化。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

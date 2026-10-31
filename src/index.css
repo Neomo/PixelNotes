@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    image-rendering: pixelated;
+  }
+  
+  body {
+    font-family: 'DotGothic16', 'VT323', monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    letter-spacing: 0.02em;
+    user-select: none;
+  }
+}
+
+/* Retro Pixel Borders & Buttons */
+.pixel-box {
+  box-shadow: 
+    -2px 0 0 0 #000,
+    2px 0 0 0 #000,
+    0 -2px 0 0 #000,
+    0 2px 0 0 #000;
+}
+
+.pixel-box-raised {
+  box-shadow: 
+    inset 2px 2px 0px 0px rgba(255, 255, 255, 0.7),
+    inset -2px -2px 0px 0px rgba(0, 0, 0, 0.4),
+    -2px 0 0 0 #000,
+    2px 0 0 0 #000,
+    0 -2px 0 0 #000,
+    0 2px 0 0 #000;
+}
+
+.pixel-box-sunken {
+  box-shadow: 
+    inset 2px 2px 0px 0px rgba(0, 0, 0, 0.5),
+    inset -2px -2px 0px 0px rgba(255, 255, 255, 0.6),
+    -2px 0 0 0 #000,
+    2px 0 0 0 #000,
+    0 -2px 0 0 #000,
+    0 2px 0 0 #000;
+}
+
+.pixel-btn {
+  position: relative;
+  transition: transform 0.05s ease;
+  box-shadow: 
+    inset 2px 2px 0px 0px rgba(255, 255, 255, 0.7),
+    inset -2px -2px 0px 0px rgba(0, 0, 0, 0.4),
+    -2px 0 0 0 #000,
+    2px 0 0 0 #000,
+    0 -2px 0 0 #000,
+    0 2px 0 0 #000;
+}
+
+.pixel-btn:hover {
+  filter: brightness(1.05);
+}
+
+.pixel-btn:active {
+  box-shadow: 
+    inset 2px 2px 0px 0px rgba(0, 0, 0, 0.6),
+    inset -2px -2px 0px 0px rgba(255, 255, 255, 0.4),
+    -2px 0 0 0 #000,
+    2px 0 0 0 #000,
+    0 -2px 0 0 #000,
+    0 2px 0 0 #000;
+  transform: translate(1px, 1px);
+}
+
+/* Pixel note shadow */
+.pixel-note-shadow {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.35),
+              -2px 0 0 0 #000,
+              2px 0 0 0 #000,
+              0 -2px 0 0 #000,
+              0 2px 0 0 #000;
+}
+
+/* Retro CRT scanlines overlay */
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.18) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 50;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Custom retro scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dfdfdf;
+  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080, -1px -1px 0 0 #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cccccc;
+}
