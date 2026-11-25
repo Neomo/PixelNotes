@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Note, Folder, Tag } from '../types';
 import { PixelIcon } from './PixelIcon';
 import { formatTimeOnly, formatDateOnly } from '../utils/date';
+import { NOTE_COLOR_MAP, getNoteTextureStyle } from '../utils/noteStyles';
 
 interface StickyNoteItemProps {
   note: Note;
@@ -19,16 +20,6 @@ interface StickyNoteItemProps {
   className?: string;
 }
 
-const COLOR_MAP: Record<Note['color'], { bg: string; border: string; text: string; headerBg: string }> = {
-  yellow: { bg: '#fef08a', border: '#eab308', text: '#713f12', headerBg: '#fde047' },
-  green: { bg: '#bbf7d0', border: '#22c55e', text: '#14532d', headerBg: '#86efac' },
-  blue: { bg: '#bae6fd', border: '#0ea5e9', text: '#0c4a6e', headerBg: '#7dd3fc' },
-  pink: { bg: '#fbcfe8', border: '#ec4899', text: '#831843', headerBg: '#f9a8d4' },
-  purple: { bg: '#ddd6fe', border: '#8b5cf6', text: '#4c1d95', headerBg: '#c4b5fd' },
-  beige: { bg: '#f5ebe0', border: '#d5bdaf', text: '#4a3e3d', headerBg: '#e6ccb2' },
-  dark: { bg: '#1e293b', border: '#475569', text: '#f1f5f9', headerBg: '#334155' },
-};
-
 export const StickyNoteItem: React.FC<StickyNoteItemProps> = ({
   note,
   folders,
@@ -45,7 +36,8 @@ export const StickyNoteItem: React.FC<StickyNoteItemProps> = ({
   className = '',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const colorScheme = COLOR_MAP[note.color] || COLOR_MAP.yellow;
+  const colorScheme = NOTE_COLOR_MAP[note.color] || NOTE_COLOR_MAP.yellow;
+  const textureStyle = getNoteTextureStyle(note.texture, note.color);
   const folder = folders.find((f) => f.id === note.folderId);
   const assignedTags = tags.filter((t) => note.tagIds?.includes(t.id));
 
@@ -179,6 +171,7 @@ export const StickyNoteItem: React.FC<StickyNoteItemProps> = ({
       {/* Note Body */}
       <div
         onClick={() => onEdit(note)}
+        style={textureStyle}
         className="flex-1 p-3 cursor-pointer overflow-hidden flex flex-col justify-between"
       >
         <div>

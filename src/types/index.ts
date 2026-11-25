@@ -1,5 +1,7 @@
 export type NoteColor = 'yellow' | 'green' | 'blue' | 'pink' | 'purple' | 'beige' | 'dark';
 
+export type NoteTexture = 'none' | 'grid' | 'stripes' | 'dots' | 'checker';
+
 export type ViewMode = 'today' | 'global' | 'timeline' | 'random';
 
 export type WallpaperTheme = 'teal' | 'sunset' | 'night' | 'gameboy' | 'mac';
@@ -9,6 +11,7 @@ export interface Note {
   title: string;
   content: string;
   color: NoteColor;
+  texture?: NoteTexture;
   folderId: string | null;
   tagIds: string[];
   isPinned: boolean;
@@ -43,6 +46,7 @@ export interface DesktopSettings {
   soundEnabled: boolean;
   crtScanline: boolean;
   gridSnap: boolean;
+  clockPosition?: { x: number; y: number };
 }
 
 export interface BackupData {

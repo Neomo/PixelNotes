@@ -3,6 +3,7 @@ import { Note, Folder, Tag, DesktopSettings } from '../types';
 import { StickyNoteItem } from './StickyNoteItem';
 import { DesktopFolderIcon } from './DesktopFolderIcon';
 import { PixelIcon } from './PixelIcon';
+import { PixelClockWidget } from './PixelClockWidget';
 
 interface DesktopCanvasProps {
   notes: Note[];
@@ -18,6 +19,7 @@ interface DesktopCanvasProps {
   onUpdateContent: (id: string, newContent: string) => void;
   onUpdateNotePosition: (id: string, pos: { x: number; y: number }, zIndex: number) => void;
   onUpdateFolderPosition: (id: string, pos: { x: number; y: number }) => void;
+  onUpdateClockPosition: (pos: { x: number; y: number }) => void;
   onOpenFolder: (folder: Folder) => void;
   onNoteDropOnFolder: (noteId: string, folderId: string) => void;
   onAutoAlignNotes: () => void;
@@ -41,6 +43,7 @@ export const DesktopCanvas: React.FC<DesktopCanvasProps> = ({
   onUpdateContent,
   onUpdateNotePosition,
   onUpdateFolderPosition,
+  onUpdateClockPosition,
   onOpenFolder,
   onNoteDropOnFolder,
   onAutoAlignNotes,
@@ -174,6 +177,14 @@ export const DesktopCanvas: React.FC<DesktopCanvasProps> = ({
           );
         })}
       </div>
+
+      {/* Draggable Pixel Digital Clock Widget */}
+      <PixelClockWidget
+        position={settings.clockPosition}
+        containerRef={containerRef}
+        gridSnap={settings.gridSnap}
+        onPositionChange={onUpdateClockPosition}
+      />
 
       {/* Sticky Notes Canvas Layer */}
       {notes.map((note) => {

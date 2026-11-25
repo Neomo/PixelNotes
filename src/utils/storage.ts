@@ -94,6 +94,7 @@ export const INITIAL_NOTES: Note[] = [
     title: '复古像素设计灵感',
     content: '8-bit拟物桌面要素：\n1. 粗像素投影与高光边框\n2. 实体便签折角效果\n3. 拟物便签纸质暖黄色调\n4. 文件夹收纳与智能红点归档提示',
     color: 'blue',
+    texture: 'grid',
     folderId: 'folder-study',
     tagIds: ['tag-idea'],
     isPinned: false,
@@ -212,6 +213,9 @@ export function sanitizeNotes(notes: unknown[]): Note[] {
       color: (['yellow', 'green', 'blue', 'pink', 'purple', 'beige', 'dark'].includes(String(n.color))
         ? n.color
         : 'yellow') as Note['color'],
+      texture: (['none', 'grid', 'stripes', 'dots', 'checker'].includes(String(n.texture))
+        ? n.texture
+        : 'none') as Note['texture'],
       folderId: n.folderId ? String(n.folderId) : null,
       tagIds: Array.isArray(n.tagIds) ? n.tagIds.map(String) : [],
       isPinned: Boolean(n.isPinned),

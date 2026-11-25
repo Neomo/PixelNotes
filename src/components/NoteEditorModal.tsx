@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Note, Folder, Tag, NoteColor } from '../types';
+import { Note, Folder, Tag, NoteColor, NoteTexture } from '../types';
 import { PixelWindow } from './PixelWindow';
 import { PixelIcon } from './PixelIcon';
 import { formatDateTime } from '../utils/date';
+import {
+  NOTE_COLOR_MAP,
+  NOTE_TEXTURE_OPTIONS,
+  getNoteTextureStyle,
+} from '../utils/noteStyles';
 
 interface NoteEditorModalProps {
   isOpen: boolean;
@@ -15,15 +20,13 @@ interface NoteEditorModalProps {
   onCreateTag: (name: string, color: string) => Tag;
 }
 
-const COLOR_OPTIONS: { key: NoteColor; label: string; bg: string }[] = [
-  { key: 'yellow', label: '暖黄', bg: '#fef08a' },
-  { key: 'green', label: '薄荷绿', bg: '#bbf7d0' },
-  { key: 'blue', label: '天蓝', bg: '#bae6fd' },
-  { key: 'pink', label: '樱粉', bg: '#fbcfe8' },
-  { key: 'purple', label: '香芋紫', bg: '#ddd6fe' },
-  { key: 'beige', label: '复古米', bg: '#f5ebe0' },
-  { key: 'dark', label: '暗夜灰', bg: '#334155' },
-];
+const COLOR_OPTIONS: { key: NoteColor; label: string; bg: string }[] = (
+  Object.keys(NOTE_COLOR_MAP) as NoteColor[]
+).map((key) => ({
+  key,
+  label: NOTE_COLOR_MAP[key].label,
+  bg: NOTE_COLOR_MAP[key].bg,
+}));
 
 export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
   isOpen,
@@ -38,6 +41,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [color, setColor] = useState<NoteColor>('yellow');
+  const [texture, setTexture] = useState<NoteTexture>('none');
   const [folderId, setFolderId] = useState<string | null>(null);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [isPinned, setIsPinned] = useState(false);
@@ -51,6 +55,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
       setTitle(note.title);
       setContent(note.content);
       setColor(note.color);
+      setTexture(note.texture || 'none');
       setFolderId(note.folderId);
       setSelectedTagIds(note.tagIds || []);
       setIsPinned(note.isPinned);
@@ -89,6 +94,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
       title: title.trim() || '无标题便签',
       content,
       color,
+      texture,
       folderId: folderId || null,
       tagIds: selectedTagIds,
       isPinned,
@@ -121,7 +127,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
       title={note.id.startsWith('new-') ? '★ 新建像素便签' : `✎ 编辑便签: ${note.title || '无标题'}`}
       isOpen={isOpen}
       onClose={handleSaveAndClose}
-      initialSize={{ width: 620, height: 540 }}
+      initialSize={{ width: 640, height: 590 }}
       icon="note"
       zIndex={100}
     >
@@ -202,31 +208,71 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
           </button>
         </div>
 
-        {/* Content Textarea */}
+        {/* Content Textarea with live color & pixel texture preview */}
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="在此输入便签备忘、任务清单或灵感构想...&#10;支持 - [ ] 待办清单自动解析勾选"
-          rows={10}
-          className="w-full flex-1 p-2.5 bg-white border-2 border-black font-sans text-xs leading-relaxed outline-none resize-none focus:bg-amber-50"
+          rows={8}
+          style={{
+            backgroundColor: NOTE_COLOR_MAP[color].bg,
+            color: NOTE_COLOR_MAP[color].text,
+            ...getNoteTextureStyle(texture, color),
+          }}
+          className={`w-full flex-1 p-2.5 border-2 border-black font-sans text-xs leading-relaxed outline-none resize-none ${
+            color === 'dark' ? 'placeholder:text-slate-400' : 'placeholder:text-black/45'
+          }`}
         />
 
-        {/* Color Palette Selector */}
-        <div className="flex items-center gap-2 p-1.5 bg-neutral-200 border border-black/30">
-          <span className="font-bold text-neutral-700 shrink-0">便签纸色:</span>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {COLOR_OPTIONS.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => setColor(c.key)}
-                className={`w-5 h-5 border-2 ${
-                  color === c.key ? 'border-black scale-110 shadow-sm' : 'border-neutral-400'
-                }`}
-                style={{ backgroundColor: c.bg }}
-                title={c.label}
-              />
-            ))}
+        {/* Color Palette & Pixel Texture Selectors */}
+        <div className="flex flex-col gap-2 p-2 bg-neutral-200 border border-black/30">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-neutral-700 shrink-0 w-16">便签纸色:</span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {COLOR_OPTIONS.map((c) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  onClick={() => setColor(c.key)}
+                  className={`w-5 h-5 border-2 ${
+                    color === c.key ? 'border-black scale-110 shadow-sm' : 'border-neutral-400'
+                  }`}
+                  style={{ backgroundColor: c.bg }}
+                  title={c.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-1.5 border-t border-black/15">
+            <span className="font-bold text-neutral-700 shrink-0 w-16">像素纹理:</span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {NOTE_TEXTURE_OPTIONS.map((t) => {
+                const isSelected = texture === t.key;
+                return (
+                  <button
+                    key={t.key}
+                    type="button"
+                    onClick={() => setTexture(t.key)}
+                    className={`flex items-center gap-1.5 px-2 py-1 border text-[11px] font-mono pixel-btn ${
+                      isSelected
+                        ? 'border-black bg-amber-100 font-bold text-black ring-1 ring-black'
+                        : 'border-neutral-500 bg-white text-neutral-700 hover:bg-neutral-50'
+                    }`}
+                    title={`选择${t.label}背景纹理`}
+                  >
+                    <span
+                      className="inline-block w-4 h-4 border border-black/60 shrink-0"
+                      style={{
+                        backgroundColor: NOTE_COLOR_MAP[color].bg,
+                        ...getNoteTextureStyle(t.key, color),
+                      }}
+                    />
+                    <span className="whitespace-nowrap">{t.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

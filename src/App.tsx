@@ -167,6 +167,7 @@ export default function App() {
       title: '',
       content: '',
       color: 'yellow',
+      texture: 'none',
       folderId: folderIdDefault || null,
       tagIds: [],
       isPinned: false,
@@ -282,6 +283,13 @@ export default function App() {
   const handleUpdateFolderPosition = (id: string, pos: { x: number; y: number }) => {
     const updated = folders.map((f) => (f.id === id ? { ...f, position: pos } : f));
     persistChanges(notes, updated);
+  };
+
+  // Update Clock Widget Position from dragging
+  const handleUpdateClockPosition = (pos: { x: number; y: number }) => {
+    const newSettings = { ...settings, clockPosition: pos };
+    setSettings(newSettings);
+    saveAppDataAsync(notes, folders, tags, newSettings);
   };
 
   // Dropping Note onto a Folder (Manual Archiving by Drag)
@@ -657,6 +665,7 @@ export default function App() {
             onUpdateContent={handleUpdateNoteContent}
             onUpdateNotePosition={handleUpdateNotePosition}
             onUpdateFolderPosition={handleUpdateFolderPosition}
+            onUpdateClockPosition={handleUpdateClockPosition}
             onOpenFolder={(f) => {
               triggerSound('open');
               setActiveFolder(f);
